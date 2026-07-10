@@ -1,0 +1,698 @@
+<title>John Cage II — Technical Sales & Generative AI</title>
+
+<style>
+  :root {
+    /* Light — warm paper with a copper bias */
+    --paper:      #F5F2EC;
+    --surface:    #FBFAF6;
+    --raised:     #FFFFFF;
+    --ink:        #1A1917;
+    --ink-soft:   #57534B;
+    --ink-faint:  #837D72;
+    --line:       #E3DDD1;
+    --line-soft:  #ECE7DD;
+    --copper:     #B0532A;
+    --copper-hi:  #C4622F;
+    --teal:       #1F736A;
+    --shadow:     8px 10px 40px -22px rgba(40,30,15,.35);
+
+    --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    --font-mono: ui-monospace, "SF Mono", "Menlo", "Cascadia Code", "Roboto Mono", monospace;
+
+    --w: 1080px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper:      #121216;
+      --surface:    #17171C;
+      --raised:     #1D1D24;
+      --ink:        #ECE7DE;
+      --ink-soft:   #A29C90;
+      --ink-faint:  #7A7468;
+      --line:       #2A2A32;
+      --line-soft:  #232329;
+      --copper:     #E28A50;
+      --copper-hi:  #EE9860;
+      --teal:       #58B7AC;
+      --shadow:     10px 14px 50px -24px rgba(0,0,0,.7);
+    }
+  }
+  /* explicit toggle overrides win in both directions */
+  :root[data-theme="light"] {
+    --paper:#F5F2EC; --surface:#FBFAF6; --raised:#FFFFFF; --ink:#1A1917;
+    --ink-soft:#57534B; --ink-faint:#837D72; --line:#E3DDD1; --line-soft:#ECE7DD;
+    --copper:#B0532A; --copper-hi:#C4622F; --teal:#1F736A;
+    --shadow:8px 10px 40px -22px rgba(40,30,15,.35);
+  }
+  :root[data-theme="dark"] {
+    --paper:#121216; --surface:#17171C; --raised:#1D1D24; --ink:#ECE7DE;
+    --ink-soft:#A29C90; --ink-faint:#7A7468; --line:#2A2A32; --line-soft:#232329;
+    --copper:#E28A50; --copper-hi:#EE9860; --teal:#58B7AC;
+    --shadow:10px 14px 50px -24px rgba(0,0,0,.7);
+  }
+
+  * { box-sizing: border-box; }
+
+  .site {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.006em;
+    overflow-x: hidden;
+  }
+
+  .wrap { max-width: var(--w); margin: 0 auto; padding: 0 28px; }
+
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--copper); outline-offset: 3px; border-radius: 2px; }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--copper);
+    font-weight: 500;
+  }
+  .serif-accent { font-family: var(--font-serif); font-style: italic; }
+
+  /* ---------- NAV ---------- */
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    background: color-mix(in srgb, var(--paper) 82%, transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid transparent;
+    transition: border-color .3s, background .3s;
+  }
+  nav.stuck { border-bottom-color: var(--line); }
+  .nav-inner {
+    max-width: var(--w); margin: 0 auto; padding: 14px 28px;
+    display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; font-weight: 600; letter-spacing: -0.02em; }
+  .monogram {
+    width: 34px; height: 34px; flex: none; border-radius: 8px;
+    background: var(--ink); color: var(--paper);
+    display: grid; place-items: center;
+    font-family: var(--font-mono); font-size: 13px; font-weight: 600; letter-spacing: 0;
+  }
+  .nav-links { display: flex; gap: 26px; align-items: center; }
+  .nav-links a {
+    font-family: var(--font-mono); font-size: 12.5px; letter-spacing: .04em;
+    text-decoration: none; color: var(--ink-soft); text-transform: uppercase;
+    transition: color .2s;
+  }
+  .nav-links a:hover { color: var(--copper); }
+  .theme-btn {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em;
+    background: none; border: 1px solid var(--line); color: var(--ink-soft);
+    padding: 7px 11px; border-radius: 7px; cursor: pointer; text-transform: uppercase;
+    transition: border-color .2s, color .2s;
+  }
+  .theme-btn:hover { border-color: var(--copper); color: var(--copper); }
+  @media (max-width: 720px){ .nav-links a:not(.persist){ display:none; } }
+
+  /* ---------- HERO ---------- */
+  header.hero { position: relative; padding: 74px 0 64px; overflow: hidden; }
+  .signal { position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none; }
+  .hero .wrap { position: relative; z-index: 1; }
+  .hero-eyebrow { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .hero-eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--teal);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--teal) 18%, transparent); }
+  h1.headline {
+    font-size: clamp(2.5rem, 6.2vw, 4.6rem);
+    line-height: 1.02; letter-spacing: -0.035em; font-weight: 680;
+    margin: 22px 0 0; text-wrap: balance; max-width: 15ch;
+  }
+  h1.headline b { color: var(--copper); font-weight: 680; }
+  .lede {
+    font-family: var(--font-serif); font-size: clamp(1.15rem, 2.2vw, 1.42rem);
+    line-height: 1.5; color: var(--ink-soft); max-width: 40ch; margin: 26px 0 0;
+    letter-spacing: 0;
+  }
+  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 34px; }
+  .btn {
+    font-family: var(--font-mono); font-size: 13px; letter-spacing: .02em;
+    text-decoration: none; padding: 13px 20px; border-radius: 9px;
+    display: inline-flex; align-items: center; gap: 9px; transition: transform .15s, background .2s, border-color .2s;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-primary { background: var(--copper); color: #fff; }
+  .btn-primary:hover { background: var(--copper-hi); }
+  .btn-ghost { border: 1px solid var(--line); color: var(--ink); background: var(--surface); }
+  .btn-ghost:hover { border-color: var(--copper); color: var(--copper); }
+
+  /* stat strip */
+  .stats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+    margin-top: 58px; background: var(--line); border: 1px solid var(--line);
+    border-radius: 12px; overflow: hidden;
+  }
+  .stat { background: var(--surface); padding: 20px 20px; }
+  .stat .num { font-size: 1.7rem; font-weight: 640; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .stat .num em { color: var(--copper); font-style: normal; }
+  .stat .lab { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase;
+    letter-spacing: .09em; color: var(--ink-faint); margin-top: 6px; line-height:1.35; }
+  @media (max-width: 720px){ .stats{ grid-template-columns: repeat(2,1fr);} }
+
+  /* ---------- SECTION SHELL ---------- */
+  section { padding: 76px 0; border-top: 1px solid var(--line-soft); }
+  .sec-head { display: flex; align-items: baseline; gap: 16px; margin-bottom: 40px; flex-wrap: wrap; }
+  .sec-head .idx { font-family: var(--font-mono); font-size: 12.5px; color: var(--copper); letter-spacing: .1em; }
+  .sec-head h2 { font-size: clamp(1.7rem, 3.4vw, 2.3rem); letter-spacing: -0.03em; font-weight: 640; margin: 0; }
+  .sec-head p.sub { color: var(--ink-soft); margin: 0; max-width: 42ch; font-size: 15.5px; }
+  .sec-head .grow { flex: 1; }
+
+  /* ---------- TWO LANGUAGES ---------- */
+  .duo { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 760px){ .duo{ grid-template-columns: 1fr; } }
+  .lang {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+    padding: 30px 28px 32px; box-shadow: var(--shadow); position: relative; overflow: hidden;
+  }
+  .lang::before { content:""; position:absolute; top:0; left:0; right:0; height:3px; }
+  .lang.biz::before { background: var(--copper); }
+  .lang.eng::before { background: var(--teal); }
+  .lang h3 { font-size: 1.28rem; letter-spacing: -0.02em; margin: 6px 0 4px; font-weight: 620; }
+  .lang .tag { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing:.12em; }
+  .lang.biz .tag { color: var(--copper); }
+  .lang.eng .tag { color: var(--teal); }
+  .lang p { color: var(--ink-soft); font-size: 15.5px; margin: 14px 0 0; }
+  .lang ul { list-style: none; padding: 0; margin: 18px 0 0; display: grid; gap: 10px; }
+  .lang li { position: relative; padding-left: 22px; font-size: 15px; color: var(--ink); }
+  .lang li::before { content: "→"; position: absolute; left: 0; font-family: var(--font-mono); font-size: 13px; }
+  .lang.biz li::before { color: var(--copper); }
+  .lang.eng li::before { color: var(--teal); }
+  .bridge {
+    text-align: center; font-family: var(--font-serif); font-style: italic;
+    font-size: 1.15rem; color: var(--ink-soft); margin: 30px auto 0; max-width: 52ch;
+  }
+  .bridge b { color: var(--ink); font-style: normal; font-family: var(--font-sans); font-weight: 600; }
+
+  /* ---------- SKILLS ---------- */
+  .skillgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px 34px; }
+  @media (max-width: 720px){ .skillgrid{ grid-template-columns: 1fr; } }
+  .skillgroup .glabel {
+    display: flex; align-items: center; gap: 9px; font-family: var(--font-mono);
+    font-size: 12px; text-transform: uppercase; letter-spacing: .1em; color: var(--ink-faint);
+    padding-bottom: 12px; border-bottom: 1px solid var(--line); margin-bottom: 14px;
+  }
+  .glabel .mk { width: 8px; height: 8px; border-radius: 2px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    font-size: 13.5px; padding: 6px 12px; border-radius: 8px;
+    background: var(--surface); border: 1px solid var(--line); color: var(--ink);
+    transition: border-color .2s, transform .15s;
+  }
+  .chip:hover { transform: translateY(-1px); }
+
+  /* ---------- EXPERIENCE ---------- */
+  .timeline { display: grid; gap: 4px; }
+  .job {
+    display: grid; grid-template-columns: 190px 1fr; gap: 30px;
+    padding: 28px 0; border-top: 1px solid var(--line-soft);
+  }
+  .job:first-child { border-top: none; }
+  .job .meta .co { font-weight: 620; letter-spacing: -0.01em; font-size: 1.02rem; }
+  .job .meta .loc { color: var(--ink-faint); font-size: 13.5px; margin-top: 2px; }
+  .job .meta .dates {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: .02em; color: var(--copper);
+    margin-top: 10px; font-variant-numeric: tabular-nums;
+  }
+  .job .role { font-weight: 600; font-size: 1.08rem; margin: 0 0 4px; }
+  .job p.lead { color: var(--ink-soft); font-size: 15px; margin: 8px 0 0; }
+  .job ul { list-style: none; padding: 0; margin: 14px 0 0; display: grid; gap: 9px; }
+  .job li { position: relative; padding-left: 20px; font-size: 15px; color: var(--ink); }
+  .job li::before { content: "·"; position: absolute; left: 4px; color: var(--copper); font-weight: 700; font-size: 18px; line-height: 1; top: 1px;}
+  @media (max-width: 640px){ .job{ grid-template-columns: 1fr; gap: 12px; } }
+
+  /* ---------- PROJECTS (spec sheets) ---------- */
+  .projects { display: grid; gap: 20px; }
+  .proj {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+    overflow: hidden; box-shadow: var(--shadow); transition: transform .2s, border-color .2s;
+  }
+  .proj:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--teal) 45%, var(--line)); }
+  .proj-bar {
+    display: flex; align-items: center; gap: 12px; padding: 14px 22px;
+    border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--teal) 7%, var(--surface));
+    font-family: var(--font-mono); font-size: 13px; flex-wrap: wrap;
+  }
+  .proj-bar .path { color: var(--ink); font-weight: 500; }
+  .proj-bar .path .slash { color: var(--teal); }
+  .proj-bar .when { margin-left: auto; color: var(--ink-faint); font-size: 12px; letter-spacing: .04em; }
+  .proj-body { padding: 24px 22px 26px; display: grid; grid-template-columns: 1fr; gap: 4px; }
+  .proj-body ul { list-style: none; padding: 0; margin: 0 0 6px; display: grid; gap: 10px; }
+  .proj-body li { position: relative; padding-left: 22px; font-size: 15px; color: var(--ink-soft); }
+  .proj-body li::before { content: "▹"; position: absolute; left: 0; color: var(--teal); font-size: 13px; }
+  .proj-body li b { color: var(--ink); font-weight: 600; }
+  .metric-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 4px 0 16px; }
+  .metric {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: .02em;
+    padding: 6px 11px; border-radius: 999px; background: color-mix(in srgb, var(--teal) 12%, transparent);
+    color: var(--teal); border: 1px solid color-mix(in srgb, var(--teal) 30%, transparent);
+  }
+  .stack { display: flex; flex-wrap: wrap; gap: 7px; padding-top: 4px; border-top: 1px dashed var(--line); margin-top: 6px; }
+  .stack .t { font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-faint); padding: 4px 9px;
+    border: 1px solid var(--line); border-radius: 6px; }
+
+  /* ---------- EDUCATION / CONTACT ---------- */
+  .edu { display: flex; align-items: center; gap: 18px; background: var(--surface);
+    border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+  .edu .cap { font-size: 26px; }
+  .edu .deg { font-weight: 600; }
+  .edu .school { color: var(--ink-soft); font-size: 14.5px; }
+
+  .contact { text-align: center; padding: 90px 0 40px; }
+  .contact .eyebrow { display: block; }
+  .contact h2 { font-size: clamp(2rem, 5vw, 3.2rem); letter-spacing: -0.035em; font-weight: 660;
+    margin: 16px 0 0; text-wrap: balance; }
+  .contact h2 .serif-accent { color: var(--copper); }
+  .contact p { color: var(--ink-soft); max-width: 46ch; margin: 18px auto 0; }
+  .contact-links { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 30px; }
+  .clink {
+    font-family: var(--font-mono); font-size: 13px; text-decoration: none;
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+    padding: 12px 18px; border-radius: 10px; transition: border-color .2s, color .2s, transform .15s;
+    display: inline-flex; align-items: center; gap: 9px;
+  }
+  .clink:hover { border-color: var(--copper); color: var(--copper); transform: translateY(-2px); }
+  .clink .k { color: var(--ink-faint); }
+
+  footer { border-top: 1px solid var(--line-soft); padding: 30px 0 46px; }
+  .foot-inner { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .foot-inner .cage { font-family: var(--font-serif); font-style: italic; color: var(--ink-faint); font-size: 14px; max-width: 44ch; }
+  .foot-inner .sig { font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-faint); letter-spacing: .05em; }
+
+  /* reveal */
+  .reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .btn:hover, .proj:hover, .chip:hover, .clink:hover { transform: none; }
+    * { scroll-behavior: auto !important; }
+  }
+  html { scroll-behavior: smooth; }
+</style>
+
+<div class="site">
+
+  <nav id="nav">
+    <div class="nav-inner">
+      <a class="brand" href="#top" style="text-decoration:none">
+        <span class="monogram">JC</span>
+        <span>John&nbsp;Cage&nbsp;II</span>
+      </a>
+      <div class="nav-links">
+        <a href="#approach">Approach</a>
+        <a href="#skills">Skills</a>
+        <a href="#work">Work</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact" class="persist">Contact</a>
+        <button class="theme-btn" id="themeBtn" type="button" aria-label="Toggle color theme">Theme</button>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero" id="top">
+    <canvas class="signal" id="signal" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <div class="hero-eyebrow reveal">
+        <span class="dot"></span>
+        <span class="eyebrow">Technical Sales · Account Executive · Generative AI</span>
+      </div>
+      <h1 class="headline reveal">I sell generative&nbsp;AI <b>because I actually build&nbsp;it.</b></h1>
+      <p class="lede reveal">Seven years of consultative selling and go-to-market, paired with hands-on
+        LLM engineering — fine-tuning, RAG, and agentic systems. I run credible discovery, demos,
+        and POCs for the business buyer <span class="serif-accent">and</span> the engineer in the room.</p>
+      <div class="cta-row reveal">
+        <a class="btn btn-primary" href="mailto:jon.cage28@yahoo.com">→ Let's talk</a>
+        <a class="btn btn-ghost" href="#projects">View the build work</a>
+      </div>
+
+      <div class="stats reveal">
+        <div class="stat"><div class="num"><em>7</em>+ yrs</div><div class="lab">Customer-facing sales &amp; GTM</div></div>
+        <div class="stat"><div class="num"><em>3</em> systems</div><div class="lab">GenAI systems shipped end-to-end</div></div>
+        <div class="stat"><div class="num"><em>50</em>K</div><div class="lab">Sample SFT fine-tune dataset</div></div>
+        <div class="stat"><div class="num">~<em>40</em>%</div><div class="lab">GPU hours cut with LoRA</div></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <!-- APPROACH / TWO LANGUAGES -->
+    <section id="approach">
+      <div class="sec-head reveal">
+        <span class="idx">01</span>
+        <div>
+          <h2>I speak both languages in the room</h2>
+        </div>
+        <span class="grow"></span>
+        <p class="sub">Most technical sellers lean one way. My value is the translation layer between the two.</p>
+      </div>
+
+      <div class="duo">
+        <div class="lang biz reveal">
+          <span class="tag">The business buyer</span>
+          <h3>Consultative selling</h3>
+          <p>Seven years working customers through high-stakes decisions — qualifying, discovering,
+            and framing value for people who care about outcomes, not architecture.</p>
+          <ul>
+            <li>Inbound &amp; outbound qualification and discovery</li>
+            <li>Objection handling in time-sensitive deals</li>
+            <li>Executive-ready positioning &amp; roadmap narratives</li>
+            <li>Pipeline generation and appointment setting at volume</li>
+          </ul>
+        </div>
+        <div class="lang eng reveal">
+          <span class="tag">The engineer</span>
+          <h3>Hands-on GenAI</h3>
+          <p>I've shipped the same systems your prospects are evaluating — so demos and POCs are
+            grounded in what actually works, not a slide.</p>
+          <ul>
+            <li>LLM fine-tuning — SFT / LoRA on LLaMA 3</li>
+            <li>RAG pipelines with retrieval, embeddings &amp; HyDE</li>
+            <li>Agentic systems with LangChain &amp; CrewAI</li>
+            <li>FastAPI + Docker deployment and evaluation</li>
+          </ul>
+        </div>
+      </div>
+      <p class="bridge reveal">The result: I can translate a fine-tuning tradeoff into a
+        <b>revenue argument</b> — and a revenue goal into a <b>technical plan</b> — without losing either audience.</p>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills">
+      <div class="sec-head reveal">
+        <span class="idx">02</span>
+        <div><h2>Capabilities</h2></div>
+      </div>
+      <div class="skillgrid">
+        <div class="skillgroup reveal">
+          <div class="glabel"><span class="mk" style="background:var(--copper)"></span>Sales &amp; GTM</div>
+          <div class="chips">
+            <span class="chip">Consultative selling</span>
+            <span class="chip">Discovery</span>
+            <span class="chip">Inbound / outbound qualification</span>
+            <span class="chip">Cold calling</span>
+            <span class="chip">Objection handling</span>
+            <span class="chip">Appointment setting</span>
+            <span class="chip">Pipeline generation</span>
+          </div>
+        </div>
+        <div class="skillgroup reveal">
+          <div class="glabel"><span class="mk" style="background:var(--teal)"></span>Generative AI</div>
+          <div class="chips">
+            <span class="chip">LLMs</span>
+            <span class="chip">Fine-tuning (SFT / LoRA)</span>
+            <span class="chip">RAG</span>
+            <span class="chip">Agentic systems</span>
+            <span class="chip">Prompt engineering</span>
+            <span class="chip">LangChain</span>
+            <span class="chip">CrewAI</span>
+            <span class="chip">Embeddings &amp; vector search</span>
+          </div>
+        </div>
+        <div class="skillgroup reveal">
+          <div class="glabel"><span class="mk" style="background:var(--ink-faint)"></span>Program &amp; Project</div>
+          <div class="chips">
+            <span class="chip">Agile / Scrum</span>
+            <span class="chip">Cross-functional collaboration</span>
+            <span class="chip">Roadmap support</span>
+            <span class="chip">User feedback analysis</span>
+            <span class="chip">Product launch coordination</span>
+            <span class="chip">Documentation</span>
+          </div>
+        </div>
+        <div class="skillgroup reveal">
+          <div class="glabel"><span class="mk" style="background:var(--ink-faint)"></span>Tools</div>
+          <div class="chips">
+            <span class="chip">Jira</span>
+            <span class="chip">Asana</span>
+            <span class="chip">Smartsheet</span>
+            <span class="chip">QuickBooks</span>
+            <span class="chip">Docker</span>
+            <span class="chip">FastAPI</span>
+            <span class="chip">Google Workspace</span>
+            <span class="chip">Microsoft Office</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORK -->
+    <section id="work">
+      <div class="sec-head reveal">
+        <span class="idx">03</span>
+        <div><h2>Experience</h2></div>
+        <span class="grow"></span>
+        <p class="sub">From consumer AI go-to-market back through high-volume, high-stakes sales.</p>
+      </div>
+
+      <div class="timeline">
+        <div class="job reveal">
+          <div class="meta">
+            <div class="co">Impression AI</div>
+            <div class="loc">San Mateo, CA</div>
+            <div class="dates">Jun 2023 — Jan 2026</div>
+          </div>
+          <div class="detail">
+            <p class="role">Program Manager, Go-to-Market</p>
+            <p class="lead">Owned customer-facing go-to-market and community for a consumer generative AI
+              product — driving acquisition, activation, and retention across the lifecycle.</p>
+            <ul>
+              <li>Translated technical AI capabilities into clear value narratives for technical and non-technical audiences — the core competency of a technical seller.</li>
+              <li>Presented product updates, roadmap, and strategy to senior leadership, aligning priorities across the business.</li>
+              <li>Partnered with engineering, design, and marketing to launch differentiating features — memory-based personalization, an emotional-intelligence "Empathy Engine," 3D avatars, and real-time voice calling.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="job reveal">
+          <div class="meta">
+            <div class="co">Manifest Direct Marketing</div>
+            <div class="loc">Manteca, CA</div>
+            <div class="dates">Dec 2021 — Feb 2022</div>
+          </div>
+          <div class="detail">
+            <p class="role">Sales &amp; Refinancing Representative</p>
+            <p class="lead">Ran high-volume inbound/outbound qualification, working homeowners through
+              rate-reduction and refinancing options and booking qualified appointments for loan specialists.</p>
+            <ul>
+              <li>Led consultative discovery — researched cash-out and refinancing scenarios and matched prospects to the best-fit options.</li>
+              <li>Handled objections and competing priorities in time-sensitive, high-stakes financial conversations.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="job reveal">
+          <div class="meta">
+            <div class="co">Frontier Communications</div>
+            <div class="loc">Manteca, CA</div>
+            <div class="dates">Mar 2020 — Jan 2021</div>
+          </div>
+          <div class="detail">
+            <p class="role">Sales &amp; Customer Service Agent</p>
+            <p class="lead">Generated pipeline through door-to-door campaigns promoting fiber internet adoption across assigned territories.</p>
+            <ul>
+              <li>Resolved customer issues on first contact and fielded product and order inquiries, preventing escalations.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects">
+      <div class="sec-head reveal">
+        <span class="idx">04</span>
+        <div><h2>Generative AI, built end-to-end</h2></div>
+        <span class="grow"></span>
+        <p class="sub">The proof behind the pitch — systems I designed, trained, and deployed myself.</p>
+      </div>
+
+      <div class="projects">
+
+        <article class="proj reveal">
+          <div class="proj-bar">
+            <span class="path"><span class="slash">~/</span>llm-fine-tuning-pipeline</span>
+            <span class="when">Jun 2026</span>
+          </div>
+          <div class="proj-body">
+            <div class="metric-row">
+              <span class="metric">LLaMA 3 · 8B</span>
+              <span class="metric">50K-sample SFT</span>
+              <span class="metric">~40% fewer GPU hrs</span>
+            </div>
+            <ul>
+              <li>Fine-tuned <b>LLaMA 3 (8B)</b> via supervised fine-tuning on a 50K-sample domain dataset with LLaMA-Factory — owning prompt design, data cleaning/tokenization, and mixed-precision training.</li>
+              <li>Built an automated preprocessing pipeline (JSONL conversion, augmentation, batching) and integrated <b>LoRA adapters</b>, cutting GPU hours ~40% while preserving quality.</li>
+              <li>Containerized and deployed behind a <b>FastAPI</b> service in Docker, with automated eval via BLEU, perplexity, and human-in-the-loop feedback.</li>
+            </ul>
+            <div class="stack">
+              <span class="t">LLaMA-Factory</span><span class="t">LoRA / SFT</span><span class="t">FastAPI</span>
+              <span class="t">Docker</span><span class="t">BLEU / perplexity</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="proj reveal">
+          <div class="proj-bar">
+            <span class="path"><span class="slash">~/</span>rag-document-qa</span>
+            <span class="when">Apr 2026</span>
+          </div>
+          <div class="proj-body">
+            <div class="metric-row">
+              <span class="metric">LangChain · GPT-4o</span>
+              <span class="metric">HyDE retrieval</span>
+              <span class="metric">Multi-model benchmark</span>
+            </div>
+            <ul>
+              <li>Built an end-to-end <b>RAG pipeline</b> for document QA with LangChain and GPT-4o, benchmarked against open-source LLaMA and Mistral served via Deep Infra.</li>
+              <li>Engineered the full retrieval stack: text extraction, chunking, embedding generation, and vector search.</li>
+              <li>Improved retrieval relevance and answer accuracy over baseline using advanced prompt engineering and <b>HyDE</b> (Hypothetical Document Embeddings).</li>
+            </ul>
+            <div class="stack">
+              <span class="t">LangChain</span><span class="t">GPT-4o</span><span class="t">LLaMA / Mistral</span>
+              <span class="t">Deep Infra</span><span class="t">Vector search</span><span class="t">HyDE</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="proj reveal">
+          <div class="proj-bar">
+            <span class="path"><span class="slash">~/</span>llm-agent-system</span>
+            <span class="when">Mar 2026</span>
+          </div>
+          <div class="proj-body">
+            <div class="metric-row">
+              <span class="metric">LangChain tool-calling</span>
+              <span class="metric">CrewAI multi-agent</span>
+            </div>
+            <ul>
+              <li>Built a local <b>search agent</b> with LangChain that orchestrates LLM tool calls and synthesizes retrieved results into grounded answers.</li>
+              <li>Designed a <b>multi-agent architecture</b> with CrewAI, including a marketing-strategy agent that applies LLMs to structured business tasks.</li>
+            </ul>
+            <div class="stack">
+              <span class="t">LangChain</span><span class="t">CrewAI</span><span class="t">Tool orchestration</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- EDUCATION -->
+    <section id="education">
+      <div class="sec-head reveal">
+        <span class="idx">05</span>
+        <div><h2>Education</h2></div>
+      </div>
+      <div class="edu reveal">
+        <span class="cap">🎓</span>
+        <div>
+          <div class="deg">B.S. in Business</div>
+          <div class="school">Diablo Valley College — Pleasant Hill, CA</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact" style="border-top:1px solid var(--line-soft)">
+    <div class="wrap">
+      <span class="eyebrow reveal">Available for technical sales &amp; AE roles</span>
+      <h2 class="reveal">Let's build a <span class="serif-accent">credible</span> sales conversation.</h2>
+      <p class="reveal">If you're hiring a technical seller who can go deep on generative AI —
+        and keep the business buyer with you the whole time — let's talk.</p>
+      <div class="contact-links reveal">
+        <a class="clink" href="mailto:jon.cage28@yahoo.com"><span class="k">email</span> jon.cage28@yahoo.com</a>
+        <a class="clink" href="tel:+14157561419"><span class="k">call</span> (415) 756-1419</a>
+        <span class="clink"><span class="k">based in</span> San Mateo, CA</span>
+        <!-- Add your real links: replace href="#" below with your GitHub / LinkedIn URLs -->
+        <a class="clink" href="#"><span class="k">github</span> add link</a>
+        <a class="clink" href="#"><span class="k">linkedin</span> add link</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap foot-inner">
+      <span class="cage">"I have nothing to say, and I am saying it." — the other John Cage. This one has plenty to say about shipping AI.</span>
+      <span class="sig">© 2026 · JOHN CAGE II</span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  // theme toggle
+  var root = document.documentElement;
+  var btn = document.getElementById('themeBtn');
+  btn.addEventListener('click', function () {
+    var cur = root.getAttribute('data-theme');
+    var isDark = cur ? cur === 'dark'
+      : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  });
+
+  // sticky nav border
+  var nav = document.getElementById('nav');
+  var onScroll = function () { nav.classList.toggle('stuck', window.scrollY > 8); };
+  onScroll(); window.addEventListener('scroll', onScroll, { passive: true });
+
+  // reveal on scroll
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+
+  // hero signal waveform — a quiet nod to a namesake who worked in sound
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var cv = document.getElementById('signal');
+  if (cv) {
+    var ctx = cv.getContext('2d');
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    function size() {
+      cv.width = cv.offsetWidth * dpr; cv.height = cv.offsetHeight * dpr;
+    }
+    size(); window.addEventListener('resize', size);
+    function accent() {
+      return getComputedStyle(root).getPropertyValue('--copper').trim() || '#B0532A';
+    }
+    var t = 0;
+    function draw() {
+      var w = cv.width, h = cv.height;
+      ctx.clearRect(0, 0, w, h);
+      var mid = h * 0.62;
+      // a few layered signal lines fading upward
+      for (var k = 0; k < 3; k++) {
+        ctx.beginPath();
+        var amp = (h * 0.05) * (1 - k * 0.28);
+        var freq = 0.006 + k * 0.0016;
+        for (var x = 0; x <= w; x += 6 * dpr) {
+          var y = mid - k * (h * 0.11)
+            + Math.sin(x * freq / dpr + t + k) * amp
+            + Math.sin(x * freq * 2.3 / dpr + t * 1.4) * amp * 0.35;
+          if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.strokeStyle = accent();
+        ctx.globalAlpha = 0.14 - k * 0.035;
+        ctx.lineWidth = 1.4 * dpr;
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+      if (!reduce) { t += 0.012; requestAnimationFrame(draw); }
+    }
+    draw();
+  }
+})();
+</script>
